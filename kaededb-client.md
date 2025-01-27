@@ -27,13 +27,12 @@ If you are contributing to the KaedeDB client library or want to install it dire
 
 1.  **Download or Clone the KaedeDB Repository:**
 
-    Get the KaedeDB code from [https://github.com/DarsheeeGamer/KaedeDB](https://github.com/DarsheeeGamer/KaedeDB).  If you have a repository (e.g., on GitHub), clone it:
+    Get the KaedeDB code from [https://github.com/DarsheeeGamer/KaedeDB](https://github.com/DarsheeeGamer/KaedeDB).Clone it:
 
     ```bash
     git clone https://github.com/DarsheeeGamer/KaedeDB.git
     cd KaedeDB
     ```
-    If you downloaded a zip file, extract it and navigate to the extracted directory.
 
 2.  **Navigate to the root directory of the KaedeDB repository** (where `setup.py` is located).
 
