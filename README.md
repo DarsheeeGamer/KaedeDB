@@ -1,64 +1,58 @@
-# KaedeDB - Your Lightweight File-Based Database with REST API
+# KaedeDB - Lightweight File-Based Database with REST API - For Development and Prototyping
 
-KaedeDB is a simple, file-based database system that provides a MongoDB-like document store accessible through a RESTful API. It's designed for development, prototyping, or small-scale applications where a full-fledged database server might be overkill. KaedeDB stores data in `.kdb` files, which are encrypted for basic security and are readable through the API.
+[Link to GitHub Repository: https://github.com/DarsheeeGamer/KaedeDB](https://github.com/DarsheeeGamer/KaedeDB)
+
+**Warning: KaedeDB is intended for development, prototyping, and small-scale, non-critical applications. It is NOT recommended for production environments requiring high availability, scalability, or robust security guarantees. Consider using production-grade databases like MongoDB, PostgreSQL, or cloud-based database services for critical applications.**
+
+KaedeDB is a simple, file-based database system that provides a MongoDB-like document store accessible through a RESTful API. It's designed to be easy to set up and use for development and experimentation. KaedeDB stores data in encrypted `.kdb` files and offers basic security features through API keys and file encryption.
 
 ## Features
 
-*   **File-Based Storage:** Data is persisted in encrypted `.kdb` files, making it easy to manage and backup.
-*   **MongoDB-like API:** Provides a familiar document-oriented data model with databases, collections, and documents.
-*   **RESTful API:**  Accessible over HTTP with standard CRUD operations (Create, Read, Update, Delete).
-*   **Basic Security:**
-    *   `.kdb` database files are encrypted using `cryptography.fernet`.
-    *   API Key authentication (optional, can be enabled/disabled when starting the server).
-    *   API Keys are generated per IP address.
-*   **Command-Line Interface (CLI) for Server:**  Start and configure the server using the `kaededb serve` command.
-*   **Python Client Package:**  Easy-to-use Python client library to interact with the KaedeDB API, installable via `pip install kaededb`.
-*   **API Documentation:**  Built-in API documentation accessible through a web endpoint, styled with CSS for readability.
+*   **File-Based Storage:** Data is persisted in encrypted `.kdb` files for easy management and backup in development environments.
+*   **MongoDB-like API:** Provides a familiar document-oriented data model (databases, collections, documents) for developers accustomed to NoSQL databases.
+*   **RESTful API:**  HTTP-based API for Create, Read, Update, and Delete (CRUD) operations, facilitating integration with various applications and tools.
+*   **Basic Security Features (Development Use):**
+    *   `.kdb` database files are encrypted using `cryptography.fernet` (for basic protection of data at rest).
+    *   Optional API Key authentication to control access to the API endpoints (suitable for development, NOT robust production security).
+    *   API Keys are generated per IP address for basic access control.
+*   **Command-Line Interface (CLI) for Server:**  `kaededb serve` command for easy server startup and configuration during development.
+*   **Python Client Package:**  Convenient Python client library (`kaededb` package) to interact with the KaedeDB API from Python applications.
+*   **Built-in API Documentation:**  Web-based API documentation endpoint (`/kapi/services/kdb/docs/`) with CSS styling for easy reference.
 
 ## Prerequisites
 
 *   **Python 3.6 or higher** installed on your server and client machines.
 *   **pip** (Python package installer) should be installed.
 
-## Installation and Setup - Server
+## Installation - KaedeDB Packages from PyPI (Recommended)
 
-1.  **Download or Clone the KaedeDB Repository:**
+For the easiest setup, install the KaedeDB client and server packages directly from PyPI:
 
-    Get the KaedeDB code from [https://github.com/DarsheeeGamer/KaedeDB](https://github.com/DarsheeeGamer/KaedeDB).  If you have a repository (e.g., on GitHub), clone it:
+**Install KaedeDB Client:**
 
-    ```bash
-    git clone https://github.com/DarsheeeGamer/KaedeDB.git
-    cd KaedeDB
-    ```
-    If you downloaded a zip file, extract it and navigate to the extracted directory.
+```bash
+pip install kaededb
+```
 
-2.  **Navigate to the `kaededb_server` directory:**
+**Install KaedeDB Server:**
 
-    ```bash
-    cd kaededb_server
-    ```
+```bash
+pip install KaedeDB-Server
+```
 
-3.  **Install the KaedeDB Server Package:**
+After installation, the `kaededb serve` command will be available to start the server, and the `kaededb` Python client library can be imported in your Python projects.
 
-    From inside the `kaededb_server` directory, run:
-
-    ```bash
-    pip install .
-    ```
-
-    This will install the `KaedeDB-Server` package, its dependencies (Flask, cryptography), and make the `kaededb` command available in your environment.
-
-## Running the KaedeDB Server
+## Running the KaedeDB Server in Development
 
 1.  **Start the Server:**
 
-    Open a terminal and use the `kaededb serve` command to start the server.
+    Open a terminal and use the `kaededb serve` command to start the server with default settings:
 
     ```bash
     kaededb serve
     ```
 
-    This will start the KaedeDB API server with default settings:
+    This is suitable for development and testing. The server will run with:
 
     *   **Host:** `0.0.0.0` (accessible on all network interfaces)
     *   **Port:** `80`
@@ -66,119 +60,96 @@ KaedeDB is a simple, file-based database system that provides a MongoDB-like doc
     *   **Authentication:** Enabled
     *   **Database File:** `my_database.kdb`
 
-    You will see output in the terminal indicating the server is running and the configuration being used.
+    Check the terminal output for the server address and configuration details.
 
 2.  **Server Address:**
 
-    The server will be accessible at `http://<your_server_ip>:<port>/kapi/services/kdb/`.  Replace `<your_server_ip>` with the actual IP address or hostname of your server and `<port>` with the port the server is running on (default is 80).  If running locally, it's usually `http://localhost/kapi/services/kdb/` or `http://127.0.0.1/kapi/services/kdb/`.
+    The server will be accessible at `http://<your_server_ip>:<port>/kapi/services/kdb/`.  For local development, it's typically `http://localhost/kapi/services/kdb/` or `http://127.0.0.1/kapi/services/kdb/`.
 
-### KaedeDB Server Command-Line Arguments
+### KaedeDB Server Command-Line Arguments (for Development Configuration)
 
-The `kaededb serve` command accepts the following arguments to customize server behavior:
+The `kaededb serve` command provides arguments for development-time configuration:
 
-*   `--host <host-ip>`:  Specify the host IP address to bind to. Default: `0.0.0.0` (all interfaces).
-*   `--port <port>`: Specify the port number for the server to listen on. Default: `80`.
-*   `--storage-path <location>`:  Specify the directory where `.kdb` database files and API key tokens will be stored. Default: current directory (`.`).
-*   `--set-authentication <true|false>`: Enable or disable API key authentication. Default: `true` (authentication enabled).
-*   `--default-db <dbname>.kdb`: Specify the filename for the default database file. Must end with `.kdb` extension. Default: `my_database.kdb`.
+*   `--host <host-ip>`:  Specify the host IP address to bind to (default: `0.0.0.0`).
+*   `--port <port>`: Specify the port number for the server (default: `80`).
+*   `--storage-path <location>`:  Set the directory for `.kdb` database files and API key tokens (default: current directory `.`).
+*   `--set-authentication <true|false>`: Enable or disable API key authentication (default: `true`). Use `false` to disable API key checks for easier local testing.
+*   `--default-db <dbname>.kdb`:  Specify the filename for the default database file (default: `my_database.kdb`).
 
 **Example Commands:**
 
-*   **Run server on port 8080, store data in `/opt/kaededb_data`, and disable authentication:**
+*   **Run server on port 8080, storing data in a custom directory, and disabling authentication (for open access during development):**
 
     ```bash
-    kaededb serve --port=8080 --storage-path=/opt/kaededb_data --set-authentication=false
+    kaededb serve --port=8080 --storage-path=/tmp/kaededb_data --set-authentication=false
     ```
 
-*   **Run server on a specific IP (e.g., `192.168.1.100`), port 9000, and use a database file named `data.kdb`:**
+*   **Run server on a specific IP address and port, using a different database filename:**
 
     ```bash
-    kaededb serve --host=192.168.1.100 --port=9000 --default-db=data.kdb
+    kaededb serve --host=192.168.1.100 --port=9000 --default-db=my_dev_database.kdb
     ```
 
-*   **Run server with default settings (host `0.0.0.0`, port `80`, current directory storage, authentication enabled, `my_database.kdb`):**
+## Installation - KaedeDB Client (Python)
 
-    ```bash
-    kaededb serve
-    ```
+**Install from PyPI (Recommended):**
 
-## Installation and Setup - Client (Python)
+```bash
+pip install kaededb
+```
 
-1.  **Install the KaedeDB Client Package:**
+**Install from Source (for development):**
 
-    You can install the KaedeDB client package directly using pip, assuming you have packaged it correctly and made it available (e.g., published to PyPI or using a local index):
+If you are contributing to the KaedeDB client library or want to install it directly from the source code:
 
-    ```bash
-    pip install kaededb
-    ```
-
-    **Alternatively (for local development or if you haven't published the package):**
-
-    Navigate to the root directory of the KaedeDB repository (where the client `setup.py` is):
-
-    ```bash
-    cd path/to/your/KaedeDB # Go to the root directory (containing setup.py for client)
-    ```
-
-    And install it from the local directory:
-
-    ```bash
-    pip install .
-    ```
-
-    Both methods will install the `KaedeDB` client package, making it available for import in your Python projects.
+1.  **Download or Clone the KaedeDB Repository:** (See Server Installation instructions for repository details)
+2.  **Navigate to the root directory:** `cd path/to/your/KaedeDB`
+3.  **Install the Client Package:** `pip install .`
 
 ## Using the KaedeDB Client (Python)
 
-After installing the `KaedeDB` client package, you can use it in your Python scripts to interact with the KaedeDB API.
+After installing the `kaededb` client package, you can use it in your Python scripts to interact with the KaedeDB API.
 
-See the example scripts `example_kdb_client_interactive.py` and `example_kdb_client.py` for usage demonstrations in the root directory of the repository.
+Refer to the example scripts `example_kdb_client_interactive.py` and `example_kdb_client.py` in the root directory of the repository for usage examples.
 
-**Key Client Usage Steps:**
+**Basic Client Usage:**
 
-1.  **Import `KDBClient`:**
-
-    ```python
-    from kaededb import KDBClient
-    ```
-
+1.  **Import `KDBClient`:** `from kaededb import KDBClient`
 2.  **Initialize `KDBClient`:**
 
     ```python
     base_url = "http://localhost/kapi/services/kdb"  # Replace with your server's address
-    api_key = "YOUR_API_KEY"  # Obtain API key if authentication is enabled
+    api_key = "YOUR_API_KEY"  # Get API key if authentication is enabled
 
     client = KDBClient(base_url, api_key)
     ```
-    *   **`base_url`**:  Set this to the URL of your running KaedeDB server (e.g., `http://your_server_ip/kapi/services/kdb`).
-    *   **`api_key`**: If authentication is enabled on the server, you'll need to obtain an API key for your client's IP address by making a `POST` request to the `/kapi/services/kdb/tokens/generate` endpoint (without an API key initially) and then use the generated key for subsequent requests. If authentication is disabled, you can set `api_key` to `None`.
 
-3.  **Use Client Methods:**
+3.  **Use Client Methods:**  Call methods like `client.list_databases()`, `client.insert_document()`, etc., to interact with the API.
 
-    Use the methods of the `KDBClient` object (e.g., `client.list_databases()`, `client.create_database()`, `client.insert_document()`, etc.) to interact with the KaedeDB API. Refer to the example scripts and the API documentation for available methods and usage.
+## Accessing API Documentation
 
-## API Documentation
-
-KaedeDB provides built-in API documentation. Once you have the server running, you can access the documentation in your web browser by navigating to:
+For detailed API endpoint information, run the KaedeDB server and open the built-in documentation in your browser:
 
 ```
 http://<your_server_ip>:<port>/kapi/services/kdb/docs/
 ```
 
-This endpoint serves a styled HTML page with detailed information about all available API endpoints, request methods, headers, request bodies, query parameters, and response formats.
+## Security Considerations (Development and Limited Use)
 
-## Security Notes
+**KaedeDB's security features are basic and primarily intended for development and non-sensitive data scenarios.**
 
-*   **API Keys:** KaedeDB uses API keys for basic authentication.  API keys are specific to the IP address that requests them. Treat API keys as secrets and store them securely in your client applications.
-*   **Encryption:** Database files (`.kdb`) are encrypted at rest using `cryptography.fernet`. However, this provides basic protection and is not a substitute for comprehensive security measures.
-*   **HTTPS:** For any production or sensitive data scenarios, **strongly recommend enabling HTTPS** on your server to encrypt communication between clients and the server. This is essential to protect API keys and data in transit.
-*   **Production Readiness:** KaedeDB is a simplified, file-based database example. It is **not designed for high-load, production environments** requiring scalability, high availability, or advanced security features. For production use, consider robust database systems like MongoDB, PostgreSQL, etc.
-*   **Storage Path Security:** Ensure the `storage-path` you configure for KaedeDB server has appropriate file system permissions to prevent unauthorized access to database files and API keys.
+*   **No Production Security:**  **Do not use KaedeDB for production applications requiring robust security.** It lacks advanced security features like user authentication, authorization policies, input validation, and protection against various attack vectors.
+*   **Basic Encryption:**  `.kdb` file encryption provides minimal protection against casual inspection of data at rest but is not designed for strong security guarantees.
+*   **API Keys for Development Access Control:** API keys offer a simple way to control access during development but should not be relied upon for production-level authentication.
+*   **HTTPS Not Implemented:**  HTTPS encryption for network communication is not implemented in this example. **Enabling HTTPS is crucial for production security** to protect data in transit and API keys.
 
-## Getting Help
+**For Production Applications, Use Robust Database Systems:**
 
-If you encounter issues, have questions, or want to contribute, please open an issue on GitHub at [https://github.com/DarsheeeGamer/KaedeDB/issues](https://github.com/DarsheeeGamer/KaedeDB/issues).
+For any application handling sensitive data or requiring production-level reliability, scalability, and security, use established and robust database systems like:
 
----
+*   **Cloud-based Database Services:** (e.g., AWS DynamoDB, Google Cloud Firestore, Azure Cosmos DB) - Offer scalability, managed security, and high availability.
+*   **Production-Grade Databases:** (e.g., MongoDB, PostgreSQL, MySQL) - Mature, feature-rich databases designed for production workloads.
 
-**Enjoy using KaedeDB!**
+## Getting Help and Contributing
+
+For issues, questions, or contributions, please open an issue on GitHub: [https://github.com/DarsheeeGamer/KaedeDB/issues](https://github.com/DarsheeeGamer/KaedeDB/issues).
